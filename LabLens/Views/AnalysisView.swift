@@ -5,9 +5,9 @@ import SwiftUI
 
 /// Shows a loading state while Gemini is processing, then displays the explanation in a readable card-based layout
 struct AnalysisView: View {
-    @EnvironmentObject var pdfController: PDFController
-    @EnvironmentObject var geminiController: GeminiController
-    @EnvironmentObject var reportController: ReportController
+    @EnvironmentObject var pdfViewModel: PDFViewModel
+    @EnvironmentObject var geminiViewModel: GeminiViewModel
+    @EnvironmentObject var reportViewModel: ReportViewModel
     
     @Environment(\.dismiss) private var dismiss
     @State private var hasStartedAnalysis = false
@@ -15,11 +15,11 @@ struct AnalysisView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                if let error = pdfController.error {
+                if let error = pdfViewModel.error {
                     ErrorView(message: error)
-                } else if let error = geminiController.error {
+                } else if let error = geminiViewModel.error {
                     ErrorView(message: error)
-                } else if geminiController.isLoading {
+                } else if geminiViewModel.isLoading {
                     VStack(spacing: 16) {
                         ProgressView()
                             .scaleEffect(1.5)
@@ -27,7 +27,7 @@ struct AnalysisView: View {
                             .foregroundColor(.secondary)
                     }
                     .padding()
-                } else if let result = geminiController.analysisResult {
+                } else if let result = geminiViewModel.analysisResult {
                     VStack(alignment: .leading, spacing: 16) {
                         HStack {
                             Image(systemName: "heart.text.square.fill")
@@ -74,10 +74,10 @@ struct AnalysisView: View {
         }
         .navigationTitle("Analysis")
         .navigationBarTitleDisplayMode(.inline)
-        .task(id: pdfController.extractedText) {
-            if !hasStartedAnalysis, let text = pdfController.extractedText {
+        .task(id: pdfViewModel.extractedText) {
+            if !hasStartedAnalysis, let text = pdfViewModel.extractedText {
                 hasStartedAnalysis = true
-                await geminiController.analyzeReport(extractedText: text)
+                await geminiViewModel.analyzeReport(extractedText: text)
             }
         }
         
@@ -89,10 +89,10 @@ struct AnalysisView: View {
             .padding()
     }
     
-    /// Delegates saving the report to the ReportController
+    /// Delegates saving the report to the ReportViewModel
     private func saveReport() {
-        if let text = pdfController.extractedText, let analysis = geminiController.analysisResult {
-            reportController.saveReport(originalText: text, analysisResult: analysis)
+        if let text = pdfViewModel.extractedText, let analysis = geminiViewModel.analysisResult {
+            reportViewModel.saveReport(originalText: text, analysisResult: analysis)
         }
     }
 }

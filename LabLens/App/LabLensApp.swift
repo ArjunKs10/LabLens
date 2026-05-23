@@ -6,15 +6,15 @@ import SwiftData
 @main
 struct LabLensApp: App {
     let sharedModelContainer: ModelContainer
-    @StateObject private var reportController: ReportController
-    @StateObject private var pdfController = PDFController()
-    @StateObject private var geminiController = GeminiController()
+    @StateObject private var reportViewModel: ReportViewModel
+    @StateObject private var pdfViewModel = PDFViewModel()
+    @StateObject private var geminiViewModel = GeminiViewModel()
 
     init() {
         do {
             let container = try ModelContainer(for: Report.self)
             sharedModelContainer = container
-            _reportController = StateObject(wrappedValue: ReportController(modelContext: container.mainContext))
+            _reportViewModel = StateObject(wrappedValue: ReportViewModel(modelContext: container.mainContext))
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
@@ -23,9 +23,9 @@ struct LabLensApp: App {
     var body: some Scene {
         WindowGroup {
             HomeView()
-                .environmentObject(reportController)
-                .environmentObject(pdfController)
-                .environmentObject(geminiController)
+                .environmentObject(reportViewModel)
+                .environmentObject(pdfViewModel)
+                .environmentObject(geminiViewModel)
                 .modelContainer(sharedModelContainer)
         }
     }

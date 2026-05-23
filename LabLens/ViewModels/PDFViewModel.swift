@@ -1,4 +1,4 @@
-// Controllers/PDFController.swift
+// ViewModels/PDFViewModel.swift
 // Handles business logic for PDF import and text extraction.
 import Foundation
 import PDFKit
@@ -6,7 +6,7 @@ import SwiftUI
 import Combine
 
 /// Handles PDF import and text extraction
-class PDFController: ObservableObject {
+class PDFViewModel: ObservableObject {
     @Published var extractedText: String?
     @Published var error: String?
     

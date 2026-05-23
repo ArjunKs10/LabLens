@@ -1,5 +1,5 @@
 // Views/HomeView.swift
-// SwiftUI UI code only. Delegates user actions to injected Controllers.
+// SwiftUI UI code only. Delegates user actions to injected ViewModels.
 import SwiftUI
 
 import SwiftData
@@ -7,9 +7,9 @@ import UniformTypeIdentifiers
 
 /// Home Screen — Clean welcome screen with an "Import Report" button and a list of previously analysed reports
 struct HomeView: View {
-    @EnvironmentObject var reportController: ReportController
-    @EnvironmentObject var pdfController: PDFController
-    @EnvironmentObject var geminiController: GeminiController
+    @EnvironmentObject var reportViewModel: ReportViewModel
+    @EnvironmentObject var pdfViewModel: PDFViewModel
+    @EnvironmentObject var geminiViewModel: GeminiViewModel
     
     @Query(sort: \Report.dateAdded, order: .reverse) private var reports: [Report]
     
@@ -69,29 +69,29 @@ struct HomeView: View {
         }
     }
     
-    /// Delegates deletion to the ReportController
+    /// Delegates deletion to the ReportViewModel
     private func deleteReports(offsets: IndexSet) {
         for index in offsets {
-            reportController.deleteReport(reports[index])
+            reportViewModel.deleteReport(reports[index])
         }
     }
     
-    /// Handles the PDF import result and triggers navigation via controller
+    /// Handles the PDF import result and triggers navigation via view model
     private func handleImport(result: Result<[URL], Error>) {
         do {
             guard let selectedFile: URL = try result.get().first else { return }
             
             if selectedFile.startAccessingSecurityScopedResource() {
                 defer { selectedFile.stopAccessingSecurityScopedResource() }
-                pdfController.extractText(from: selectedFile)
-                geminiController.clear()
+                pdfViewModel.extractText(from: selectedFile)
+                geminiViewModel.clear()
                 navigateToAnalysis = true
             } else {
-                pdfController.error = "Permission denied to access the file."
+                pdfViewModel.error = "Permission denied to access the file."
                 navigateToAnalysis = true
             }
         } catch {
-            pdfController.error = error.localizedDescription
+            pdfViewModel.error = error.localizedDescription
             navigateToAnalysis = true
         }
     }

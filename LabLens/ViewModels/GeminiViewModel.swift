@@ -1,11 +1,11 @@
-// Controllers/GeminiController.swift
+// ViewModels/GeminiViewModel.swift
 // Handles all Gemini API calls and state management during the call.
 import Foundation
 import SwiftUI
 import Combine
 
 /// Handles all Gemini API calls
-class GeminiController: ObservableObject {
+class GeminiViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var analysisResult: String?
     @Published var error: String?
