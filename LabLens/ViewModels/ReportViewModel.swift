@@ -1,4 +1,4 @@
-// Controllers/ReportController.swift
+// ViewModels/ReportViewModel.swift
 // Handles SwiftData CRUD operations keeping data logic separate from Views.
 import Foundation
 import SwiftData
@@ -7,7 +7,7 @@ import Combine
 
 /// Handles SwiftData CRUD operations for Reports
 @MainActor
-class ReportController: ObservableObject {
+class ReportViewModel: ObservableObject {
     private var modelContext: ModelContext
     
     init(modelContext: ModelContext) {
